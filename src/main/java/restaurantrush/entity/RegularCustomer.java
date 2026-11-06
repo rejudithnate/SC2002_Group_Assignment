@@ -1,14 +1,7 @@
 package restaurantrush.entity;
 
-/**
- * RegularCustomer represents a normal customer.
- *
- * - Loses 8 satisfaction points per waiting turn.
- * - Pays full price.
- * - Uses the default food selection rule.
- *
- * All behaviours are inherited from Customer.
- */
+
+//regular customer is just a normal customer, follows the same as Stage 1: lose 8 satisfaction points per wait, pays full price and use default food selection. (inherited behaviours from Customer class)
 public final class RegularCustomer extends Customer {
 
     public RegularCustomer(int customerId) {

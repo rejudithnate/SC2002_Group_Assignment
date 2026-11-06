@@ -1,35 +1,22 @@
 package restaurantrush.entity;
 
 import java.util.Objects;
+//CriticCustomer is a food critic that loses 12 satisfaction points per waiting turn, and has a special trait of always choosing Pasta as preferred dish. CriticCustomer pays full price, no discounts.
 
-/**
- * CriticCustomer represents a food critic.
- *
- * - Loses 12 satisfaction points per waiting turn.
- * - Always chooses Pasta as the preferred dish.
- * - Pays full price.
- */
 public final class CriticCustomer extends Customer {
 
     public CriticCustomer(int customerId) {
         super(customerId);
     }
 
-    /**
-     * Override the normal satisfaction loss.
-     * Critics lose 12 points per waiting turn.
-     */
+    
+    //this ovverides the normal satisfaction loss to account for the special loss of 12 points per wait
     @Override
     public int getSatisfactionLossPerTurn() {
         return 12;
     }
 
-    /**
-     * Override the normal food selection.
-     *
-     * Special Critic behaviour:
-     * Critics always prefer Pasta.
-     */
+    //this overrides normal food selection to always prefer Pasta
     @Override
     public MenuItem chooseMenuItem(Menu menu) {
         return Objects.requireNonNull(menu)
@@ -46,9 +33,7 @@ public final class CriticCustomer extends Customer {
                 );
     }
 
-    /**
-     * Return the customer type for the UI.
-     */
+    //returns customer type of game ui
     @Override
     public String getCustomerType() {
         return "Critic";

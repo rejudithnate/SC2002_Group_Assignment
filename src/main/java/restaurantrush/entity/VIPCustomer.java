@@ -1,33 +1,19 @@
 package restaurantrush.entity;
 
-/**
- * VIPCustomer represents a VIP customer.
- *
- * - Loses 5 satisfaction points per waiting turn.
- * - Receives a 10% discount on orders.
- * - Uses the normal food selection rule.
- */
+//this is a class for VIP customer, which loses 5 satisfaction points per waiting turn, and uses the normal food selction. However, it receives a 10% discount
 public final class VIPCustomer extends Customer {
 
     public VIPCustomer(int customerId) {
         super(customerId);
     }
 
-    /**
-     * Override the normal satisfaction loss.
-     * VIP customers lose only 5 points per turn.
-     */
+    //this overrides normal satisfaction loss to account for loss of 5 points per wait
     @Override
     public int getSatisfactionLossPerTurn() {
         return 5;
     }
 
-    /**
-     * Override the normal bill calculation.
-     * VIP customers receive a 10% discount.
-     *
-     * Prices are stored in integer cents.
-     */
+    //this overrides normal bill calculation for VIp customers to receive 10% discount. prcies should be stored in integer cents
     @Override
     public int calculateBillCents(int basePriceCents) {
         if (basePriceCents < 0) {
@@ -42,9 +28,7 @@ public final class VIPCustomer extends Customer {
         );
     }
 
-    /**
-     * Return the customer type for the UI.
-     */
+    //returns customer type for game UI
     @Override
     public String getCustomerType() {
         return "VIP";
