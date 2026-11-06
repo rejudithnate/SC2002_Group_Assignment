@@ -10,7 +10,7 @@ public final class Menu {
 
     public List<MenuItem> getMenuItems() { return menuItems; }
 
-    /** Repeatable customer choice: Pasta, Salad, Burger, then repeat by customer ID. */
+    // choosing customer menu item using customer id
     public MenuItem chooseForCustomer(int customerId) {
         if (customerId < 1) { throw new IllegalArgumentException("Customer ID must be positive"); }
         return menuItems.get((customerId - 1 + 2) % menuItems.size());
