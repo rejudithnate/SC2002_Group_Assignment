@@ -2,7 +2,6 @@ package restaurantrush.boundary;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
@@ -85,11 +84,8 @@ public final class GameUI {
     }
 
     private void displayMetrics(Restaurant restaurant) {
-        String average = restaurant.getPaidSatisfactionAverage().isPresent()
-                ? String.format(Locale.ROOT, "%.1f", restaurant.getAvgSatisfaction()) : "N/A";
-        output.printf(Locale.ROOT,
-                "Revenue: $%.2f | Paid: %d | Average paid satisfaction: %s | Served: %d | Unhappy departures: %d%n",
-                restaurant.getRevenue(), restaurant.getPaidCustomerCount(), average,
+        output.printf("Revenue $%.2f | Paid: %d | Average paid satisfaction: %s | Served: %d | Unhappy departures: %d%n",
+                restaurant.getRevenue(), restaurant.getPaidCustomerCount(), restaurant.getAvgSatisfaction(),
                 restaurant.getServedCustomers(), restaurant.getUnhappyCustomers());
     }
 
