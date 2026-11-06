@@ -10,8 +10,13 @@ public final class Order {
     private final int requiredUnits;
     private int cookedUnit;
     private OrderStatus status = OrderStatus.PREPARING;
+    private final int lockedPriceCents;
 
     public Order(int tableId, List<MenuItem> menuItems) {
+        this(tableId, menuItems, totalPriceCents(menuItems));
+    }
+
+    public Order(int tableId, List<MenuItem> menuItems, int finalPriceCents) {
 
         if (tableId < 1) {
             throw new IllegalArgumentException("Table ID must be positive");
@@ -24,8 +29,24 @@ public final class Order {
             throw new IllegalArgumentException("An order must contain an item");
         }
 
+        int fullPriceCents = totalPriceCents(this.menuItems);
+
+        if (finalPriceCents < 0 || finalPriceCents > fullPriceCents) {
+            throw new IllegalArgumentException(
+                "Final price must be between zero and full price"
+            );
+        }
+
+        this.lockedPriceCents = finalPriceCents;
+
         requiredUnits = this.menuItems.stream()
                 .mapToInt(MenuItem::getPreparationUnits)
+                .reduce(0, Math::addExact);
+    }
+
+    private static int totalPriceCents(List<MenuItem> items) {
+        return List.copyOf(items).stream()
+                .mapToInt(MenuItem::getPriceCents)
                 .reduce(0, Math::addExact);
     }
 
@@ -78,7 +99,7 @@ public final class Order {
     }
 
     public int getPriceCents() {
-        return menuItems.stream().mapToInt(MenuItem::getPriceCents).reduce(0, Math::addExact);
+        return lockedPriceCents;
     }
 
     private void requireStatus(OrderStatus expected) {
