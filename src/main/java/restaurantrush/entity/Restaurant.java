@@ -15,6 +15,7 @@ public final class Restaurant {
     private final Waiter waiter = new Waiter();
     private final Chef chef = new Chef();
     private final Cashier cashier = new Cashier();
+    private final Host host = new Host();
     private final Menu menu = new Menu();
 
     private final Queue<Customer> waitingQueue = new LinkedList<>();
@@ -45,6 +46,10 @@ public final class Restaurant {
 
     public List<Order> getOrders() {
         return orders;
+    }
+
+    public Host getHost() {
+        return host;
     }
 
     public Waiter getWaiter() {
@@ -148,7 +153,7 @@ public final class Restaurant {
             return;
         }
 
-        waiter.sitCustomer(customer, table);
+        host.seatCustomer(customer, table);
         waitingQueue.remove(customer);
     }
 
