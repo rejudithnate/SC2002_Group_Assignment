@@ -1,27 +1,7 @@
 package restaurantrush.entity;
 import java.util.Objects;
 
-public final class Waiter {
-
-    // track if waiter has acted
-    private boolean hasActed;
-
-    // check if waiter is available to act
-    public boolean isAvailable() { 
-        return !hasActed;
-    }
-
-    // resets the waiters' action status at the start of each turn
-    public void resetForNewTurn() { 
-        hasActed = false; 
-    }
-
-    // prevents waiter from performing more than one action
-    private void requireAvailable() {
-        if (hasActed) { 
-            throw new IllegalStateException("Waiter already acted this turn"); 
-        }
-    }
+public final class Waiter extends Staff {
 
     // seats customer to table
     public void sitCustomer(Customer customer, Table table) {
@@ -38,7 +18,7 @@ public final class Waiter {
         // assign the table to the customer and update the status
         table.assign(customer);
         customer.setStatus(CustomerStatus.SEATED);
-        hasActed = true;
+        markActed();
     }
 
     // take order from seated customer
@@ -54,7 +34,7 @@ public final class Waiter {
 
         // update customer status 
         customer.setStatus(CustomerStatus.ORDERED);
-        hasActed = true;
+        markActed();
     }
 
     public void serveOrder(Order order) {
@@ -63,13 +43,6 @@ public final class Waiter {
 
         // mark order as served
         Objects.requireNonNull(order).markServed();
-        hasActed = true;
-    }
-
-    // skip waiter turn
-    public void waitTurn() {
-
-        requireAvailable();
-        hasActed = true;
+        markActed();
     }
 }

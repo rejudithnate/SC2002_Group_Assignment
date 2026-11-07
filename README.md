@@ -1,4 +1,1 @@
-# SC2002_Group_Assignment
-
-Stage 2 of Restaurant Rush. Requires JDK 17 or newer; runs offline.
-
+ÿþ
