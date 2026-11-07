@@ -9,7 +9,8 @@ public final class Restaurant {
 
     private final List<Table> tables = new ArrayList<>();
     private final List<Order> orders = new ArrayList<>();
-    private final List<Customer> customers = new ArrayList<>(); // keep track of all customers (including those who cancelled and left)
+    // Keep departed customers too; insertion order preserves arrival order
+    private final Map<Integer, Customer> customers = new LinkedHashMap<>();
 
     private final Waiter waiter = new Waiter();
     private final Chef chef = new Chef();
@@ -95,7 +96,7 @@ public final class Restaurant {
     public List<Customer> getCustomers() {
         List<Customer> currentCustomers = new ArrayList<>();
 
-        for (Customer customer : customers) {
+        for (Customer customer : customers.values()) {
             if (customer.getStatus() != CustomerStatus.PAID && customer.getStatus() != CustomerStatus.CANCELLED) {
                 currentCustomers.add(customer);
             }
@@ -105,12 +106,7 @@ public final class Restaurant {
     }
 
     public Customer getCustomer(int id) {
-        for (Customer customer : customers) {
-            if (customer.getCustomerId() == id) {
-                return customer;
-            }
-        }
-        return null;
+        return customers.get(id);
     }
 
     public void addWaitingCustomer(Customer customer) {
@@ -126,7 +122,7 @@ public final class Restaurant {
             return;
         }
 
-        customers.add(customer);
+        customers.put(customer.getCustomerId(), customer);
         waitingQueue.add(customer);
     }
 

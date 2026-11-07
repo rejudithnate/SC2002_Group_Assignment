@@ -12,7 +12,7 @@ public final class CriticCustomer extends Customer {
     
     //this ovverides the normal satisfaction loss to account for the special loss of 12 points per wait
     @Override
-    public int getSatisfactionLossPerTurn() {
+    protected int getSatisfactionLossPerTurn() {
         return 12;
     }
 

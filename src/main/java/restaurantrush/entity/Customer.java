@@ -2,7 +2,7 @@ package restaurantrush.entity;
 
 import java.util.Objects;
 
-public class Customer {
+public abstract class Customer {
     private final int customerId;
     private int satisfaction = 100;
     private CustomerStatus status = CustomerStatus.WAITING;
@@ -68,10 +68,9 @@ public class Customer {
         return status == CustomerStatus.WAITING || status == CustomerStatus.SEATED
                 || (status == CustomerStatus.ORDERED && order.getStatus() != OrderStatus.SERVED);
     }
-    // for regular customers, default satisfaction loss per turn is 8
-    public int getSatisfationLossPerTurn(){
-        return 8;
-    }
+    // Each customer type supplies its own waiting satisfaction
+    protected abstract int getSatisfactionLossPerTurn();
+
     //regular customers must pay full price
     public int calculateBillCents(int basePriceCents){
         if (basePriceCents < 0) {
@@ -79,6 +78,7 @@ public class Customer {
         }
     return basePriceCents;
     }
+
     //allow subclasses to override how food is chosen
     public MenuItem chooseMenuItem (Menu menu){
         return Objects.requireNonNull (menu).chooseForCustomer(customerId);
