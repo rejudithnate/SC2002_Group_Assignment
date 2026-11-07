@@ -33,8 +33,11 @@ public final class GameUI {
     }
     //the order deatils will only be showed if customer has placed an order
     private void displayCustomer(Customer customer){
+
+        // edited to get customer type
         output.printf("  Customer %d (%s) | Satisfaction %d | %s",
                 customer.getCustomerId(), customer.getCustomerType(), customer.getSatisfaction(), customer.getStatus());
+                
         if (customer.getOrder() != null){
             output.printf(" | %s: %s (%d preparation units completed)",
                     customer.getOrder().getMenuItems().get(0).getName(),

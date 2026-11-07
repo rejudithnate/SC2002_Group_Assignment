@@ -9,7 +9,7 @@ public final class Restaurant {
 
     private final List<Table> tables = new ArrayList<>();
     private final List<Order> orders = new ArrayList<>();
-    // Keep departed customers too; insertion order preserves arrival order.
+    // Keep departed customers too; insertion order preserves arrival order
     private final Map<Integer, Customer> customers = new LinkedHashMap<>();
 
     private final Waiter waiter = new Waiter();

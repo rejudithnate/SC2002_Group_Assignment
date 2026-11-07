@@ -55,7 +55,7 @@ public final class TurnController {
         if ((turn - 1) % 3 == 0) {
             int customerId = (turn - 1) / 3 + 1;
 
-            // Fixed arrivals make the Stage 2 base setting reproducible.
+            // fixed arrivals for VIP and critic in rounds
             Customer arrivingCustomer = switch (customerId) {
                 case 2 -> new VIPCustomer(customerId);
                 case 3 -> new CriticCustomer(customerId);
