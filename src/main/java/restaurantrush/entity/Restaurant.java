@@ -183,9 +183,17 @@ public final class Restaurant {
             return null;
         }
 
+        MenuItem selected = customer.chooseMenuItem(menu);
+        //for customer specific pricing
+        int priceCents = customer.calculateBillCents(
+            selected.getPriceCents()
+        );
+
+        // store final price in order
         Order order = new Order(
             customer.getTable().getTableId(),
-            List.of(menu.chooseForCustomer(id))
+            List.of(selected),
+            priceCents
         );
 
         customer.setOrder(order);

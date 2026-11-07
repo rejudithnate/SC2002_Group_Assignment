@@ -50,7 +50,12 @@ public final class TurnController {
         }
         //add a new wiating customer on turns 1,4,7 etc.
         if ((turn - 1) % 3 == 0) {
-            restaurant.addWaitingCustomer(new Customer((turn - 1) / 3 + 1));
+            int customerId = (turn - 1) / 3 + 1;
+
+            Customer arrivingCustomer =
+                    CustomerFactory.createBaseSettingCustomer(customerId);
+
+            restaurant.addWaitingCustomer(arrivingCustomer);
         }
         //get waiter and chef actions in new turn
         restaurant.getWaiter().resetForNewTurn();

@@ -2,7 +2,7 @@ package restaurantrush.entity;
 
 import java.util.Objects;
 
-public final class Customer {
+public class Customer {
     private final int customerId;
     private int satisfaction = 100;
     private CustomerStatus status = CustomerStatus.WAITING;
@@ -68,11 +68,34 @@ public final class Customer {
         return status == CustomerStatus.WAITING || status == CustomerStatus.SEATED
                 || (status == CustomerStatus.ORDERED && order.getStatus() != OrderStatus.SERVED);
     }
+    // for regular customers, default satisfaction loss per turn is 8
+    public int getSatisfationLossPerTurn(){
+        return 8;
+    }
+    //regular customers must pay full price
+    public int calculateBillCents(int basePriceCents){
+        if (basePriceCents < 0) {
+        throw new IllegalArgumentException("Price cannot be negative");
+        }
+    return basePriceCents;
+    }
+    //allow subclasses to override how food is chosen
+    public MenuItem chooseMenuItem (Menu menu){
+        return Objects.requireNonNull (menu).chooseForCustomer(customerId);
+    }
 
-    public void decreaseSatisfaction() { decreaseSatisfaction(8); }
+    public String getCustomerType(){
+        return "Regular";
+    }
+
+    public void decreaseSatisfaction() { 
+        decreaseSatisfaction(getSatisfactionLossPerTurn()); 
+    }
 
     public void decreaseSatisfaction(int amount) {
-        if (amount < 0) { throw new IllegalArgumentException("Decay cannot be negative"); }
+        if (amount < 0) { 
+            throw new IllegalArgumentException("Decay cannot be negative"); 
+        }
         satisfaction = Math.max(0, satisfaction - amount);
     }
 }
