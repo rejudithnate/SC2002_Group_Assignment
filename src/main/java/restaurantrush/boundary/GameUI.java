@@ -33,8 +33,8 @@ public final class GameUI {
     }
     //the order deatils will only be showed if customer has placed an order
     private void displayCustomer(Customer customer){
-        output.printf("  Customer %d | Satisfaction %d | %s",
-                customer.getCustomerId(), customer.getSatisfaction(), customer.getStatus());
+        output.printf("  Customer %d (%s) | Satisfaction %d | %s",
+                customer.getCustomerId(), customer.getCustomerType(), customer.getSatisfaction(), customer.getStatus());
         if (customer.getOrder() != null){
             output.printf(" | %s: %s (%d preparation units completed)",
                     customer.getOrder().getMenuItems().get(0).getName(),
@@ -84,8 +84,10 @@ public final class GameUI {
     }
 
     private void displayMetrics(Restaurant restaurant) {
+        String average = restaurant.getPaidCustomerCount() == 0
+                ? "N/A" : String.format("%.2f", restaurant.getAvgSatisfaction());
         output.printf("Revenue $%.2f | Paid: %d | Average paid satisfaction: %s | Served: %d | Unhappy departures: %d%n",
-                restaurant.getRevenue(), restaurant.getPaidCustomerCount(), restaurant.getAvgSatisfaction(),
+                restaurant.getRevenue(), restaurant.getPaidCustomerCount(), average,
                 restaurant.getServedCustomers(), restaurant.getUnhappyCustomers());
     }
 

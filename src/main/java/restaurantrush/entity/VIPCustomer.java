@@ -9,7 +9,7 @@ public final class VIPCustomer extends Customer {
 
     //this overrides normal satisfaction loss to account for loss of 5 points per wait
     @Override
-    public int getSatisfactionLossPerTurn() {
+    protected int getSatisfactionLossPerTurn() {
         return 5;
     }
 

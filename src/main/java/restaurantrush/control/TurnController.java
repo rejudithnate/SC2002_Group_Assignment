@@ -7,9 +7,12 @@ import java.util.Optional;
 import restaurantrush.boundary.GameUI;
 import restaurantrush.entity.Customer;
 import restaurantrush.entity.CustomerStatus;
+import restaurantrush.entity.CriticCustomer;
 import restaurantrush.entity.Order;
 import restaurantrush.entity.OrderStatus;
 import restaurantrush.entity.Restaurant;
+import restaurantrush.entity.RegularCustomer;
+import restaurantrush.entity.VIPCustomer;
 
 //TurnController class coordinates phases. Note that manager choices have to be validated before staff member acts
 public final class TurnController {
@@ -52,8 +55,12 @@ public final class TurnController {
         if ((turn - 1) % 3 == 0) {
             int customerId = (turn - 1) / 3 + 1;
 
-            Customer arrivingCustomer =
-                    CustomerFactory.createBaseSettingCustomer(customerId);
+            // Fixed arrivals make the Stage 2 base setting reproducible.
+            Customer arrivingCustomer = switch (customerId) {
+                case 2 -> new VIPCustomer(customerId);
+                case 3 -> new CriticCustomer(customerId);
+                default -> new RegularCustomer(customerId);
+            };
 
             restaurant.addWaitingCustomer(arrivingCustomer);
         }
