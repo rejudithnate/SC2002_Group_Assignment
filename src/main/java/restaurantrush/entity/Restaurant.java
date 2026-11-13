@@ -20,6 +20,7 @@ public final class Restaurant {
 
     private final Queue<Customer> waitingQueue = new LinkedList<>();
     private final Queue<Customer> paymentQueue = new LinkedList<>();
+    private final HappyHourPolicy happyHour = new HappyHourPolicy();
 
     private int unhappyDepartures = 0;
     private int servedCustomers = 0;
@@ -94,6 +95,10 @@ public final class Restaurant {
         }
 
         return (double) totalPaidSatisfaction / paidCustomers;
+    }
+
+    public HappyHourPolicy getHappyHour() {
+        return happyHour;
     }
 
     // customer methods
@@ -185,16 +190,17 @@ public final class Restaurant {
         }
 
         MenuItem selected = customer.chooseMenuItem(menu);
-        //for customer specific pricing
+
         int priceCents = customer.calculateBillCents(
             selected.getPriceCents()
         );
 
-        // store final price in order
+        int finalPrice = happyHour.applyDiscount(priceCents);
+
         Order order = new Order(
             customer.getTable().getTableId(),
             List.of(selected),
-            priceCents
+            finalPrice
         );
 
         customer.setOrder(order);
@@ -307,4 +313,32 @@ public final class Restaurant {
         customer.setStatus(CustomerStatus.CANCELLED);
         unhappyDepartures++;
     }
-}
+
+    public void activateHappyHour() {
+        happyHour.activate();
+    }
+
+    public void applyHappyHourRecovery() {
+        if (happyHour.isActive()) {
+            for (Customer customer : getCustomers()) {
+                customer.recoverSatisfaction(15);
+            }
+        }
+    }
+
+    public boolean canActivateHappyHour() {
+        return happyHour.canActivate();
+    }
+
+    public boolean isHappyHourActive() {
+        return happyHour.isActive();
+    }
+
+    public int getHappyHourRemainingTurns() {
+        return happyHour.getRemainingTurns();
+    }
+
+    public void endHappyHourTurn() {
+        happyHour.endTurn();
+    }
+}   

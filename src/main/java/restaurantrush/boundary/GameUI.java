@@ -37,7 +37,7 @@ public final class GameUI {
         // edited to get customer type
         output.printf("  Customer %d (%s) | Satisfaction %d | %s",
                 customer.getCustomerId(), customer.getCustomerType(), customer.getSatisfaction(), customer.getStatus());
-                
+           
         if (customer.getOrder() != null){
             output.printf(" | %s: %s (%d preparation units completed)",
                     customer.getOrder().getMenuItems().get(0).getName(),
@@ -72,6 +72,28 @@ public final class GameUI {
             } catch (NumberFormatException exception){
                 output.println("Please enter a whole number.");
             }
+        }
+    }
+
+    public Optional<Boolean> readHappyHourChoice(int turn) {
+        while (true) {
+            output.print("Activate Happy Hour for Turn " + turn + "? (Y/N): ");
+
+            if (!scanner.hasNextLine()) {
+                return Optional.empty();
+            }
+
+            String choice = scanner.nextLine().trim();
+
+            if (choice.equalsIgnoreCase("Y")) {
+                return Optional.of(true);
+            }
+
+            if (choice.equalsIgnoreCase("N")) {
+                return Optional.of(false);
+            }
+
+            output.println("Please enter Y or N.");
         }
     }
 

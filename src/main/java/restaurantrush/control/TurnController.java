@@ -49,27 +49,51 @@ public final class TurnController {
     }
 
     //starts next turn in sequential order, prevents turns from being started twice so that players cannot abuse feature to reset staff
-    public void beginTurn(int turn) {
-        if (activeTurn != 0 || turn != completedTurns + 1 || turn > GameController.MAX_TURN) {
-            throw new IllegalStateException("Turns must run once, in order, from 1 to 18");
-        }
-        //add a new waiting customer on turns 1,4,7 etc.
-        if ((turn - 1) % 3 == 0) {
-            int customerId = (turn - 1) / 3 + 1;
+    
+public void beginTurn(int turn) {
+    beginTurn(turn, false);
+}
 
-            // fixed arrivals for VIP and critic in rounds
-            Customer arrivingCustomer = switch (customerId) {
-                case 2 -> new VIPCustomer(customerId);
-                case 3 -> new CriticCustomer(customerId);
-                default -> new RegularCustomer(customerId);
-            };
-
-            restaurant.addWaitingCustomer(arrivingCustomer);
-        }
-        for (Staff staff : List.of(restaurant.getHost(), restaurant.getWaiter(), restaurant.getChef())) { staff.resetForNewTurn(); }
-        hostCompleted = false;
-        activeTurn = turn;
+public void beginTurn(int turn, boolean activateHappyHour) {
+    if (activeTurn != 0 || turn != completedTurns + 1 ||
+        turn > GameController.MAX_TURN) {
+        throw new IllegalStateException("Invalid turn");
     }
+
+    // Activate Happy Hour if selected
+    if (activateHappyHour) {
+        restaurant.activateHappyHour();
+    }
+
+    // Add a new customer every 3 turns
+    if ((turn - 1) % 3 == 0) {
+        int customerId = (turn - 1) / 3 + 1;
+
+        Customer arrivingCustomer = switch (customerId) {
+            case 2 -> new VIPCustomer(customerId);
+            case 3 -> new CriticCustomer(customerId);
+            default -> new RegularCustomer(customerId);
+        };
+
+        restaurant.addWaitingCustomer(arrivingCustomer);
+    }
+
+    // Reset staff for the new turn
+    for (Staff staff : List.of(
+            restaurant.getHost(),
+            restaurant.getWaiter(),
+            restaurant.getChef())) {
+        staff.resetForNewTurn();
+    }
+
+    hostCompleted = false;
+
+    // Restore satisfaction during Happy Hour
+    restaurant.applyHappyHourRecovery();
+
+    activeTurn = turn;
+}
+
 
     public List<Action> getHostActions() {
         requireActiveTurn();
@@ -167,6 +191,7 @@ public final class TurnController {
         //update waiting customers and process departure
         restaurant.applyWaitingAndDepartures();
         //mark current turn as completed and clear active turn
+        restaurant.endHappyHourTurn();
         completedTurns = activeTurn;
         activeTurn = 0;
     }
@@ -174,8 +199,20 @@ public final class TurnController {
     //runs one complete turn using gui. displays game state, collects staff actions and executes them.
     public boolean runTurn(int turn, GameUI ui) {
         Objects.requireNonNull(ui);
+        boolean activate = false;
+
+    // Ask whether the player wants to activate Happy Hour
+    if (restaurant.getHappyHour().canActivate()) {
+        Optional<Boolean> choice = ui.readHappyHourChoice(turn);
+
+        if (choice.isEmpty()) {
+            return false;
+        }
+
+        activate = choice.get();
+    }
         // Start the turn and display the current restaurant state
-        beginTurn(turn);
+        beginTurn(turn, activate);
         ui.displayGameState(restaurant, turn, GameController.MAX_TURN);
         // add in host action here
         Optional<Action> hostAction = ui.readAction("Host", getHostActions());

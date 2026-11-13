@@ -16,4 +16,6 @@ public final class RegularCustomer extends Customer {
     public String getCustomerType() {
         return "Regular";
     }
+
+    
 }
