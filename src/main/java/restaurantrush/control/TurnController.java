@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import restaurantrush.boundary.GameUI;
+import restaurantrush.entity.CriticCustomer;
 import restaurantrush.entity.Customer;
 import restaurantrush.entity.CustomerStatus;
-import restaurantrush.entity.CriticCustomer;
 import restaurantrush.entity.Order;
 import restaurantrush.entity.OrderStatus;
-import restaurantrush.entity.Restaurant;
 import restaurantrush.entity.RegularCustomer;
+import restaurantrush.entity.Restaurant;
+import restaurantrush.entity.Staff;
 import restaurantrush.entity.VIPCustomer;
 
 //TurnController class coordinates phases. Note that manager choices have to be validated before staff member acts
@@ -33,6 +34,7 @@ public final class TurnController {
     private final Restaurant restaurant;
     private int completedTurns;
     private int activeTurn;
+    private boolean hostCompleted;
 
     //create turncontroller for specific restaurant
     public TurnController(Restaurant restaurant) {
@@ -51,7 +53,7 @@ public final class TurnController {
         if (activeTurn != 0 || turn != completedTurns + 1 || turn > GameController.MAX_TURN) {
             throw new IllegalStateException("Turns must run once, in order, from 1 to 18");
         }
-        //add a new wiating customer on turns 1,4,7 etc.
+        //add a new waiting customer on turns 1,4,7 etc.
         if ((turn - 1) % 3 == 0) {
             int customerId = (turn - 1) / 3 + 1;
 
@@ -64,10 +66,29 @@ public final class TurnController {
 
             restaurant.addWaitingCustomer(arrivingCustomer);
         }
-        //get waiter and chef actions in new turn
-        restaurant.getWaiter().resetForNewTurn();
-        restaurant.getChef().resetForNewTurn();
+        for (Staff staff : List.of(restaurant.getHost(), restaurant.getWaiter(), restaurant.getChef())) { staff.resetForNewTurn(); }
+        hostCompleted = false;
         activeTurn = turn;
+    }
+
+    public List<Action> getHostActions() {
+        requireActiveTurn();
+        if (hostCompleted) { throw new IllegalStateException("Host already acted"); }
+        List<Action> actions = new ArrayList<>();
+        actions.add(Action.waitAction());
+        if (restaurant.getAvailableTable() != null) {
+            for (Customer customer : restaurant.getWaitingCustomers()) {
+                actions.add(new Action(Task.SEAT, customer.getCustomerId()));
+            }
+        }
+        return List.copyOf(actions);
+    }
+
+    public void performHostAction(Action action) {
+        if (!getHostActions().contains(action)) { throw new IllegalArgumentException("Invalid Host action"); }
+        if (action.task() == Task.WAIT) { restaurant.getHost().waitTurn(); }
+        else { restaurant.seatCustomer(action.customerId()); }
+        hostCompleted = true;
     }
 
     //return all valid actions the waiter can perform this turn --> depends on customer status and table avail
@@ -121,6 +142,8 @@ public final class TurnController {
         if (!getChefActions(waiterAction).contains(chefAction)) {
             throw new IllegalArgumentException("That chef action is not available");
         }
+        if (!hostCompleted) { performHostAction(Action.waitAction()); }
+
         //execute the waiter's selected action
         switch (waiterAction.task()) {
             case WAIT -> restaurant.getWaiter().waitTurn();
@@ -154,6 +177,10 @@ public final class TurnController {
         // Start the turn and display the current restaurant state
         beginTurn(turn);
         ui.displayGameState(restaurant, turn, GameController.MAX_TURN);
+        // add in host action here
+        Optional<Action> hostAction = ui.readAction("Host", getHostActions());
+        if (hostAction.isEmpty()) { return false; }
+        performHostAction(hostAction.get());
         // Get the player's selected waiter action
         Optional<Action> waiterAction = ui.readAction("Waiter", getWaiterActions());
         // Stop if input ends before a waiter action is selected
