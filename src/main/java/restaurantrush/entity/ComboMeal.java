@@ -29,10 +29,10 @@ public final class ComboMeal extends MenuItem {
     @Override
     public int getPriceCents() {
         // Add the prices of both dishes
-        int totalPrice = firstDish.getPriceCents() + secondDish.getPriceCents();
+        long totalPrice = (long) firstDish.getPriceCents() + secondDish.getPriceCents();
 
-        // Apply a 10% discount to the combo
-        return Money.percentage(totalPrice, 90);
+        // Apply a 10% discount, rounded to the nearest cent (same as VIP pricing)
+        return Math.toIntExact((totalPrice * 9L + 5L) / 10L);
     }
 
     @Override

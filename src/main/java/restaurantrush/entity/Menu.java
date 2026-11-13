@@ -1,6 +1,7 @@
 package restaurantrush.entity;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class Menu {
 
@@ -29,8 +30,8 @@ public final class Menu {
             throw new IllegalArgumentException("Customer ID must be positive");
         }
 
-        // Every fourth customer orders a combo meal
-        if (customerId % 4 == 0) {
+        // Each selection has a 25% chance of being a combo meal
+        if (ThreadLocalRandom.current().nextInt(4) == 0) {
             return combo;
         }
 
