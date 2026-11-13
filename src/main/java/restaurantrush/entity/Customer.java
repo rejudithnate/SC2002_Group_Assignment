@@ -98,4 +98,12 @@ public abstract class Customer {
         }
         satisfaction = Math.max(0, satisfaction - amount);
     }
+
+    public void recoverSatisfaction(int amount) {
+        satisfaction += amount;
+
+        if (satisfaction > 100) {
+            satisfaction = 100;
+        }
+    }
 }

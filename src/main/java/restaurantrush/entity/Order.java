@@ -11,7 +11,7 @@ public final class Order {
     private int cookedUnit;
     private OrderStatus status = OrderStatus.PREPARING;
     private final int lockedPriceCents;
-
+    
     public Order(int tableId, List<MenuItem> menuItems) {
         this(tableId, menuItems, totalPriceCents(menuItems));
     }
@@ -39,15 +39,23 @@ public final class Order {
 
         this.lockedPriceCents = finalPriceCents;
 
-        requiredUnits = this.menuItems.stream()
-                .mapToInt(MenuItem::getPreparationUnits)
-                .reduce(0, Math::addExact);
+        int totalUnits = 0;
+
+        for (MenuItem item : this.menuItems) {
+            totalUnits += item.getPreparationUnits();
+        }
+
+        requiredUnits = totalUnits;
     }
 
     private static int totalPriceCents(List<MenuItem> items) {
-        return List.copyOf(items).stream()
-                .mapToInt(MenuItem::getPriceCents)
-                .reduce(0, Math::addExact);
+        int total = 0;
+
+        for (MenuItem item : items) {
+            total += item.getPriceCents();
+        }
+
+        return total;
     }
 
     public int getTableId() {
@@ -109,4 +117,8 @@ public final class Order {
             );
         }
     }
+
+    
+
+    
 }
