@@ -42,11 +42,11 @@ public final class Restaurant {
     }
 
     public List<Table> getTables() {
-        return tables;
+        return List.copyOf(tables);
     }
 
     public List<Order> getOrders() {
-        return orders;
+        return List.copyOf(orders);
     }
 
     public Host getHost() {

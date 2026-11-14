@@ -100,10 +100,12 @@ public abstract class Customer {
     }
 
     public void recoverSatisfaction(int amount) {
-        satisfaction += amount;
-
-        if (satisfaction > 100) {
-            satisfaction = 100;
+        if (amount < 0) {
+            throw new IllegalArgumentException(
+                "Recovery cannot be negative"
+            );
         }
+
+        satisfaction = Math.min(100, satisfaction + amount);
     }
 }

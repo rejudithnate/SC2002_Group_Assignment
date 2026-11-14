@@ -19,18 +19,7 @@ public final class CriticCustomer extends Customer {
     //this overrides normal food selection to always prefer Pasta
     @Override
     public MenuItem chooseMenuItem(Menu menu) {
-        return Objects.requireNonNull(menu)
-                .getMenuItems()
-                .stream()
-                .filter(item ->
-                    item.getName().equals("Pasta")
-                )
-                .findFirst()
-                .orElseThrow(() ->
-                    new IllegalStateException(
-                        "Critic's preferred item is not on the menu"
-                    )
-                );
+        return Objects.requireNonNull(menu).getPasta();
     }
 
     //returns customer type of game ui

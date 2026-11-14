@@ -34,7 +34,6 @@ public final class TurnController {
     private final Restaurant restaurant;
     private int completedTurns;
     private int activeTurn;
-    private boolean hostCompleted;
 
     //create turncontroller for specific restaurant
     public TurnController(Restaurant restaurant) {
@@ -86,8 +85,6 @@ public void beginTurn(int turn, boolean activateHappyHour) {
         staff.resetForNewTurn();
     }
 
-    hostCompleted = false;
-
     // Restore satisfaction during Happy Hour
     restaurant.applyHappyHourRecovery();
 
@@ -97,7 +94,7 @@ public void beginTurn(int turn, boolean activateHappyHour) {
 
     public List<Action> getHostActions() {
         requireActiveTurn();
-        if (hostCompleted) { throw new IllegalStateException("Host already acted"); }
+        if (!restaurant.getHost().isAvailable()) { throw new IllegalStateException("Host already acted"); }
         List<Action> actions = new ArrayList<>();
         actions.add(Action.waitAction());
         if (restaurant.getAvailableTable() != null) {
@@ -118,8 +115,6 @@ public void beginTurn(int turn, boolean activateHappyHour) {
         } else {
             restaurant.seatCustomerByHost(action.customerId());
         }
-
-        hostCompleted = true;
     }
 
     //return all valid actions the waiter can perform this turn --> depends on customer status and table avail
@@ -173,7 +168,7 @@ public void beginTurn(int turn, boolean activateHappyHour) {
         if (!getChefActions(waiterAction).contains(chefAction)) {
             throw new IllegalArgumentException("That chef action is not available");
         }
-        if (!hostCompleted) { performHostAction(Action.waitAction()); }
+        if (restaurant.getHost().isAvailable()) { performHostAction(Action.waitAction()); }
 
         //execute the waiter's selected action
         switch (waiterAction.task()) {
