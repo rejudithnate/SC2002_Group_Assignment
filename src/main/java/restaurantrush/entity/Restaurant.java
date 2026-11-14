@@ -146,19 +146,35 @@ public final class Restaurant {
         return null;
     }
 
+    // Waiter seats a customer
     public void seatCustomer(int id) {
         Customer customer = getCustomer(id);
         Table table = getAvailableTable();
 
-        if (customer == null || table == null) {
-            return;
+        if (customer == null || table == null ||
+            !waitingQueue.contains(customer)) {
+            throw new IllegalArgumentException(
+                "Customer cannot be seated"
+            );
         }
 
-        if (!waitingQueue.contains(customer)) {
-            return;
+        waiter.sitCustomer(customer, table);
+        waitingQueue.remove(customer);
+    }
+
+    // Host seats a customer
+    public void seatCustomerByHost(int id) {
+        Customer customer = getCustomer(id);
+        Table table = getAvailableTable();
+
+        if (customer == null || table == null ||
+            !waitingQueue.contains(customer)) {
+            throw new IllegalArgumentException(
+                "Customer cannot be seated"
+            );
         }
 
-        host.seatCustomer(customer, table);
+        host.sitCustomer(customer, table);
         waitingQueue.remove(customer);
     }
 

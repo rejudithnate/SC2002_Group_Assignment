@@ -109,9 +109,16 @@ public void beginTurn(int turn, boolean activateHappyHour) {
     }
 
     public void performHostAction(Action action) {
-        if (!getHostActions().contains(action)) { throw new IllegalArgumentException("Invalid Host action"); }
-        if (action.task() == Task.WAIT) { restaurant.getHost().waitTurn(); }
-        else { restaurant.seatCustomer(action.customerId()); }
+        if (!getHostActions().contains(action)) {
+            throw new IllegalArgumentException("Invalid Host action");
+        }
+
+        if (action.task() == Task.WAIT) {
+            restaurant.getHost().waitTurn();
+        } else {
+            restaurant.seatCustomerByHost(action.customerId());
+        }
+
         hostCompleted = true;
     }
 
