@@ -335,8 +335,12 @@ public final class Restaurant {
     }
 
     public void applyHappyHourRecovery() {
-        if (happyHour.isActive()) {
-            for (Customer customer : getCustomers()) {
+        if (!happyHour.isActive()) {
+            return;
+        }
+
+        for (Customer customer : getCustomers()) {
+            if (customer.isWaitingForService()) {
                 customer.recoverSatisfaction(15);
             }
         }
