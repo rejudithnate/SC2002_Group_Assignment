@@ -23,6 +23,18 @@ public final class GameUI {
     public void displayGameState(Restaurant restaurant, int turn, int maxTurns){
         output.printf("Restaurant Rush | Turn %d/%d%n", turn, maxTurns);
         displayMetrics(restaurant);
+        
+        if (restaurant.isHappyHourActive()) {
+            output.printf(
+                "Happy Hour ACTIVE | %d turn(s) remaining%n",
+                restaurant.getHappyHourRemainingTurns()
+            );
+        } else if (restaurant.canActivateHappyHour()) {
+            output.println("Happy Hour available");
+        } else {
+            output.println("Happy Hour already used");
+        }
+
         output.println("Waiting queue:");
         if (restaurant.getWaitingCustomers().isEmpty()) { output.println("  Empty"); }
         for (Customer customer : restaurant.getWaitingCustomers()) { displayCustomer(customer); }

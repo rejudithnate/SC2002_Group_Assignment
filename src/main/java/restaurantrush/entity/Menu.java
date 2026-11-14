@@ -30,10 +30,11 @@ public final class Menu {
             throw new IllegalArgumentException("Customer ID must be positive");
         }
 
-        // Each selection has a 25% chance of being a combo meal
-        if (ThreadLocalRandom.current().nextInt(4) == 0) {
+        // Every fourth customer chooses a combo
+            if (customerId % 4 == 0) {
             return combo;
         }
+
 
         // Other customers alternate between Pasta, Salad and Burger
         int index = (customerId - 1 + 2) % 3;
