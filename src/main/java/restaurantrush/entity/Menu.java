@@ -1,7 +1,6 @@
 package restaurantrush.entity;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public final class Menu {
     // Base menu prices are stored in cents.

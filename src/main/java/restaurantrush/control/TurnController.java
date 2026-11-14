@@ -121,15 +121,20 @@ public final class TurnController {
 
     // Choices reflect any seating the Host has already completed.
     public List<Action> getWaiterActions() {
+
         requireActiveTurn();
         List<Action> actions = new ArrayList<>();
         actions.add(Action.waitAction());
+
         for (Customer customer : restaurant.getCustomers()) {
             int id = customer.getCustomerId();
+
             if (customer.getStatus() == CustomerStatus.WAITING && restaurant.getAvailableTable() != null) {
                 actions.add(new Action(Task.SEAT, id));
+
             } else if (customer.getStatus() == CustomerStatus.SEATED) {
                 actions.add(new Action(Task.TAKE_ORDER, id));
+
             } else if (customer.getStatus() == CustomerStatus.ORDERED
                     && customer.getOrder().getStatus() == OrderStatus.READY) {
                 actions.add(new Action(Task.SERVE, id));
@@ -140,19 +145,24 @@ public final class TurnController {
 
     // The Chef may also work on the order the Waiter is about to take.
     public List<Action> getChefActions(Action waiterAction) {
+
         if (!getWaiterActions().contains(waiterAction)) {
+            
             throw new IllegalArgumentException("That waiter action is not available");
         }
         List<Action> actions = new ArrayList<>();
         actions.add(Action.waitAction());
+
         for (Customer customer : restaurant.getCustomers()) {
             Order order = customer.getOrder();
+
             if ((order != null && order.getStatus() == OrderStatus.PREPARING)
                     || (waiterAction.task() == Task.TAKE_ORDER
                             && waiterAction.customerId() == customer.getCustomerId())) {
                 actions.add(new Action(Task.PREPARE, customer.getCustomerId()));
             }
         }
+
         return List.copyOf(actions);
     }
 
@@ -179,8 +189,10 @@ public final class TurnController {
 
         // Food finished by the Chef cannot be served until a later turn.
         if (chefAction.task() == Task.WAIT) {
+
             restaurant.getChef().waitTurn();
         } else {
+
             restaurant.getChef().prepareOrder(restaurant.getCustomer(chefAction.customerId()).getOrder());
         }
 
@@ -188,12 +200,12 @@ public final class TurnController {
 
         // Diners who became ready to pay this turn must wait until the next.
         Customer paying = restaurant.getEligiblePayingCustomer(activeTurn);
+
         if (paying != null) {
             restaurant.getCashier().processPayment(paying, restaurant);
         }
 
         restaurant.applyWaitingAndDepartures();
-
         restaurant.endHappyHourTurn();
         completedTurns = activeTurn;
         activeTurn = 0;
@@ -201,6 +213,7 @@ public final class TurnController {
 
     // Returns false if input ends before the turn is completed.
     public boolean runTurn(int turn, GameUI ui) {
+        
         Objects.requireNonNull(ui);
         boolean activate = false;
 
