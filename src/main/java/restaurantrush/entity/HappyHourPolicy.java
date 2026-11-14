@@ -1,8 +1,10 @@
-
 package restaurantrush.entity;
 
 public final class HappyHourPolicy {
+    // Expiry does not reset this flag: activation is allowed once per game.
     private boolean activated = false;
+
+    // Includes the current turn while Happy Hour is active.
     private int remainingTurns = 0;
     private final static int DURATION = 2;
 
@@ -23,6 +25,7 @@ public final class HappyHourPolicy {
         remainingTurns = DURATION;
     }
 
+    // Applies to new bills only; existing orders keep their locked price.
     public int applyDiscount(int billCents) {
         if (billCents < 0) {
             throw new IllegalArgumentException("Negative bill");
@@ -45,4 +48,3 @@ public final class HappyHourPolicy {
         return !activated;
     }
 }
-

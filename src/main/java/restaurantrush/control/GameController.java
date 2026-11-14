@@ -1,13 +1,15 @@
 package restaurantrush.control;
 
 import java.util.Objects;
+
 import restaurantrush.boundary.GameUI;
 import restaurantrush.entity.Restaurant;
 
-// will evaluates the result only after all 18 turns finish
+// Checks the final result only after all 18 turns have finished.
 public final class GameController {
     public static final int MAX_TURN = 18;
-    // No. of completed turns, if 0 means the session hasnt completed a turn
+
+    // Completed turns; zero before the first turn ends.
     private int currentTurn;
     private boolean started;
     private final Restaurant restaurant;
@@ -18,15 +20,19 @@ public final class GameController {
         this.restaurant = Objects.requireNonNull(restaurant);
         this.turnController = Objects.requireNonNull(turnController);
         this.ui = Objects.requireNonNull(ui);
-        //ensure both controllers use same fresh restaurant session
+
+        // Both controllers must belong to the same new game.
         if (turnController.getRestaurant() != restaurant || turnController.getCompletedTurns() != 0) {
             throw new IllegalArgumentException("Game and turn controllers must share a fresh restaurant session");
         }
     }
+
     public void startGame() {
-        if (started) { throw new IllegalStateException("Create a new game to play again"); }
+        if (started) {
+            throw new IllegalStateException("Create a new game to play again");
+        }
         started = true;
-        //run the game for up to 18 turns only
+
         while (currentTurn < MAX_TURN) {
             if (!turnController.runTurn(currentTurn + 1, ui)) {
                 ui.displayInputEnded();
@@ -43,11 +49,12 @@ public final class GameController {
                         restaurant.getRevenueCents(), restaurant.getAvgSatisfaction());
     }
 
-    // revenue is expressed in integer cents!!
+    // Revenue is compared in cents to avoid floating-point rounding.
     public static boolean meetsVictoryTargets(int paidCustomers, int revenueCents, double averageSatisfaction) {
         return paidCustomers >= 4 && revenueCents >= 4500 && averageSatisfaction >= 60;
     }
-    public int getCurrentTurn() { 
-        return currentTurn; 
+
+    public int getCurrentTurn() {
+        return currentTurn;
     }
 }

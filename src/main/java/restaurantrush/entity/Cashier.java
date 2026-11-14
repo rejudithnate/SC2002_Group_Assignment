@@ -1,13 +1,11 @@
 package restaurantrush.entity;
+
 import java.util.Objects;
 
 public final class Cashier {
-
-    // handles payment for customer
+    
     public void processPayment(Customer customer, Restaurant restaurant) {
-
-        // Check that is not null
-        // Restuarnt handles updating the revenue and customer status
+        // Restaurant validates the queue and updates payment records together.
         Objects.requireNonNull(restaurant).completePayment(customer);
     }
 }

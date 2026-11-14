@@ -1,8 +1,7 @@
 package restaurantrush.entity;
 
-//regular customer is just a normal customer, follows the same as Stage 1: lose 8 satisfaction points per wait, pays full price and use default food selection. (inherited behaviours from Customer class)
+// Uses the default food choice and full-price bill, losing 8 satisfaction per wait.
 public final class RegularCustomer extends Customer {
-
     public RegularCustomer(int customerId) {
         super(customerId);
     }
@@ -16,6 +15,4 @@ public final class RegularCustomer extends Customer {
     public String getCustomerType() {
         return "Regular";
     }
-
-    
 }

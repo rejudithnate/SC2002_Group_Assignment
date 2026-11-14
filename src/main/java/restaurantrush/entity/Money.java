@@ -1,7 +1,6 @@
 package restaurantrush.entity;
 
 final class Money {
-
     private Money() {
     }
 
@@ -10,6 +9,7 @@ final class Money {
             throw new IllegalArgumentException("Invalid amount");
         }
 
+        // Add half a cent before division to round to the nearest cent.
         return (int) (((long) cents * percentage + 50) / 100);
     }
 }
