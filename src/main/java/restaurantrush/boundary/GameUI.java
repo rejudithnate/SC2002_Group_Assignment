@@ -5,29 +5,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
+
 import restaurantrush.control.TurnController.Action;
 import restaurantrush.entity.Customer;
 import restaurantrush.entity.Restaurant;
 import restaurantrush.entity.Table;
 
-// for console presentation and input parsing, available actions come from controller.
+// Displays state and reads choices; the controller supplies the available actions.
 public final class GameUI {
     private final Scanner scanner;
     private final PrintStream output;
 
-    public GameUI(Scanner scanner, PrintStream output){
+    public GameUI(Scanner scanner, PrintStream output) {
         this.scanner = Objects.requireNonNull(scanner);
         this.output = Objects.requireNonNull(output);
     }
-    //show current game progress, customers in the waiting queue and the table statuses
-    public void displayGameState(Restaurant restaurant, int turn, int maxTurns){
+
+    public void displayGameState(Restaurant restaurant, int turn, int maxTurns) {
         output.printf("Restaurant Rush | Turn %d/%d%n", turn, maxTurns);
         displayMetrics(restaurant);
-        
+
         if (restaurant.isHappyHourActive()) {
             output.printf(
-                "Happy Hour ACTIVE | %d turn(s) remaining%n",
-                restaurant.getHappyHourRemainingTurns()
+                    "Happy Hour ACTIVE | %d turn(s) remaining%n",
+                    restaurant.getHappyHourRemainingTurns()
             );
         } else if (restaurant.canActivateHappyHour()) {
             output.println("Happy Hour available");
@@ -36,21 +37,27 @@ public final class GameUI {
         }
 
         output.println("Waiting queue:");
-        if (restaurant.getWaitingCustomers().isEmpty()) { output.println("  Empty"); }
-        for (Customer customer : restaurant.getWaitingCustomers()) { displayCustomer(customer); }
+        if (restaurant.getWaitingCustomers().isEmpty()) {
+            output.println("  Empty");
+        }
+
+        for (Customer customer : restaurant.getWaitingCustomers()) {
+            displayCustomer(customer);
+        }
+
         for (Table table : restaurant.getTables()) {
             output.printf("Table %d: %s%n", table.getTableId(), table.isAvailable() ? "Available" : "Occupied");
-            if (table.getCustomer() != null) { displayCustomer(table.getCustomer()); }
+            if (table.getCustomer() != null) {
+                displayCustomer(table.getCustomer());
+            }
         }
     }
-    //the order deatils will only be showed if customer has placed an order
-    private void displayCustomer(Customer customer){
 
-        // edited to get customer type
+    private void displayCustomer(Customer customer) {
         output.printf("  Customer %d (%s) | Satisfaction %d | %s",
                 customer.getCustomerId(), customer.getCustomerType(), customer.getSatisfaction(), customer.getStatus());
-           
-        if (customer.getOrder() != null){
+
+        if (customer.getOrder() != null) {
             output.printf(" | %s: %s (%d preparation units completed)",
                     customer.getOrder().getMenuItems().get(0).getName(),
                     customer.getOrder().getStatus(), customer.getOrder().getCookedUnit());
@@ -58,11 +65,14 @@ public final class GameUI {
         output.println();
     }
 
-    // will keep asking until valid task is chosen or input ends
-    public Optional<Action> readAction(String staff, List<Action> actions){
-        if (actions.isEmpty()){ throw new IllegalArgumentException("An action list must include Wait"); }
+    // Invalid input is retried without returning a choice or spending a task.
+    public Optional<Action> readAction(String staff, List<Action> actions) {
+        if (actions.isEmpty()) {
+            throw new IllegalArgumentException("An action list must include Wait");
+        }
+
         output.println(staff + " tasks:");
-        for (int index = 0; index < actions.size(); index++){
+        for (int index = 0; index < actions.size(); index++) {
             Action action = actions.get(index);
             String label = switch (action.task()) {
                 case WAIT -> "Wait";
@@ -73,15 +83,19 @@ public final class GameUI {
             };
             output.printf("  %d: %s%n", index, label);
         }
-        //can retry invalid inputs without ending game
-        while (true){
+
+        while (true) {
             output.print(staff + " choice: ");
-            if (!scanner.hasNextLine()){ return Optional.empty(); }
+            if (!scanner.hasNextLine()) {
+                return Optional.empty();
+            }
             try {
                 int choice = Integer.parseInt(scanner.nextLine().trim());
-                if (choice >= 0 && choice < actions.size()) { return Optional.of(actions.get(choice)); }
+                if (choice >= 0 && choice < actions.size()) {
+                    return Optional.of(actions.get(choice));
+                }
                 output.println("That task is unavailable. Choose a displayed number.");
-            } catch (NumberFormatException exception){
+            } catch (NumberFormatException exception) {
                 output.println("Please enter a whole number.");
             }
         }
@@ -120,6 +134,7 @@ public final class GameUI {
         output.println();
     }
 
+    // No payments yet means there is no satisfaction average to display.
     private void displayMetrics(Restaurant restaurant) {
         String average = restaurant.getPaidCustomerCount() == 0
                 ? "N/A" : String.format("%.2f", restaurant.getAvgSatisfaction());

@@ -1,23 +1,21 @@
-
 package restaurantrush.entity;
 
 import java.util.List;
 
 public final class Order {
-
     private final int tableId;
     private final List<MenuItem> menuItems;
     private final int requiredUnits;
     private int cookedUnit;
     private OrderStatus status = OrderStatus.PREPARING;
+    // Discounts are settled at ordering time, not recalculated at payment.
     private final int lockedPriceCents;
-    
+
     public Order(int tableId, List<MenuItem> menuItems) {
         this(tableId, menuItems, totalPriceCents(menuItems));
     }
 
     public Order(int tableId, List<MenuItem> menuItems, int finalPriceCents) {
-
         if (tableId < 1) {
             throw new IllegalArgumentException("Table ID must be positive");
         }
@@ -74,6 +72,7 @@ public final class Order {
         return status;
     }
 
+    // READY is reached only after every required preparation unit is complete.
     public void prepareUnit() {
         requireStatus(OrderStatus.PREPARING);
 
@@ -117,8 +116,4 @@ public final class Order {
             );
         }
     }
-
-    
-
-    
 }

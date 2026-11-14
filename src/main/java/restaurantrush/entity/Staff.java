@@ -1,11 +1,16 @@
 package restaurantrush.entity;
 
 public abstract class Staff {
+    // Each staff instance has its own allowance for the current turn.
     private boolean hasActed;
 
-    public final boolean isAvailable() { return !hasActed; }
+    public final boolean isAvailable() {
+        return !hasActed;
+    }
 
-    public final void resetForNewTurn() { hasActed = false; }
+    public final void resetForNewTurn() {
+        hasActed = false;
+    }
 
     protected final void requireAvailable() {
         if (hasActed) {
@@ -18,7 +23,8 @@ public abstract class Staff {
         hasActed = true;
     }
 
-    public final void waitTurn() { 
-        markActed(); 
+    // Choosing Wait still spends this staff member's task.
+    public final void waitTurn() {
+        markActed();
     }
 }

@@ -1,6 +1,7 @@
 package restaurantrush;
 
 import java.util.Scanner;
+
 import restaurantrush.boundary.GameUI;
 import restaurantrush.control.GameController;
 import restaurantrush.control.TurnController;

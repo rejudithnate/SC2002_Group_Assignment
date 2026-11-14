@@ -12,19 +12,41 @@ public abstract class Customer {
     private int readyToPayTurn;
 
     public Customer(int customerId) {
-        if (customerId < 1) { throw new IllegalArgumentException("Customer ID must be positive"); }
+        if (customerId < 1) {
+            throw new IllegalArgumentException("Customer ID must be positive");
+        }
         this.customerId = customerId;
     }
 
-    public int getCustomerId() { return customerId; }
-    public int getSatisfaction() { return satisfaction; }
-    public CustomerStatus getStatus() { return status; }
-    public Order getOrder() { return order; }
-    public Table getTable() { return table; }
-    public int getServedTurn() { return servedTurn; }
-    public int getReadyToPayTurn() { return readyToPayTurn; }
+    public int getCustomerId() {
+        return customerId;
+    }
 
-    // customer owns both ends of association withh status, but only restaurant can change it
+    public int getSatisfaction() {
+        return satisfaction;
+    }
+
+    public CustomerStatus getStatus() {
+        return status;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public int getServedTurn() {
+        return servedTurn;
+    }
+
+    public int getReadyToPayTurn() {
+        return readyToPayTurn;
+    }
+
+    // Keep status changes inside the entity package and reject invalid transitions.
     void setStatus(CustomerStatus next) {
         Objects.requireNonNull(next);
         boolean allowed = switch (status) {
@@ -34,12 +56,16 @@ public abstract class Customer {
             case READY_TO_PAY -> next == CustomerStatus.PAID;
             case PAID, CANCELLED -> false;
         };
-        if (!allowed) { throw new IllegalStateException("Invalid customer transition: " + status + " -> " + next); }
+        if (!allowed) {
+            throw new IllegalStateException("Invalid customer transition: " + status + " -> " + next);
+        }
         status = next;
     }
 
-    // table owns both ends of association with customer, but only restaurant can change it
-    void setTable(Table table) { this.table = table; }
+    // Table.assign() and unAssign() update both sides of the table association.
+    void setTable(Table table) {
+        this.table = table;
+    }
 
     public void setOrder(Order order) {
         Objects.requireNonNull(order);
@@ -53,7 +79,10 @@ public abstract class Customer {
         this.order = order;
     }
 
-    void recordService(int turn) { servedTurn = turn; }
+    // Remember when service happened so eating takes a full turn.
+    void recordService(int turn) {
+        servedTurn = turn;
+    }
 
     void finishEating(int turn) {
         if (status != CustomerStatus.ORDERED || order == null
@@ -64,37 +93,38 @@ public abstract class Customer {
         readyToPayTurn = turn;
     }
 
+    // READY food still counts as waiting until the Waiter serves it.
     public boolean isWaitingForService() {
         return status == CustomerStatus.WAITING || status == CustomerStatus.SEATED
                 || (status == CustomerStatus.ORDERED && order.getStatus() != OrderStatus.SERVED);
     }
-    // Each customer type supplies its own waiting satisfaction
+
     protected abstract int getSatisfactionLossPerTurn();
 
-    //regular customers must pay full price
-    public int calculateBillCents(int basePriceCents){
+    // Full price by default; VIP customers override this calculation.
+    public int calculateBillCents(int basePriceCents) {
         if (basePriceCents < 0) {
-        throw new IllegalArgumentException("Price cannot be negative");
+            throw new IllegalArgumentException("Price cannot be negative");
         }
-    return basePriceCents;
+        return basePriceCents;
     }
 
-    //allow subclasses to override how food is chosen
-    public MenuItem chooseMenuItem (Menu menu){
-        return Objects.requireNonNull (menu).chooseForCustomer(customerId);
+    // Customer subclasses may override the menu preference.
+    public MenuItem chooseMenuItem(Menu menu) {
+        return Objects.requireNonNull(menu).chooseForCustomer(customerId);
     }
 
-    public String getCustomerType(){
+    public String getCustomerType() {
         return "Regular";
     }
 
-    public void decreaseSatisfaction() { 
-        decreaseSatisfaction(getSatisfactionLossPerTurn()); 
+    public void decreaseSatisfaction() {
+        decreaseSatisfaction(getSatisfactionLossPerTurn());
     }
 
     public void decreaseSatisfaction(int amount) {
-        if (amount < 0) { 
-            throw new IllegalArgumentException("Decay cannot be negative"); 
+        if (amount < 0) {
+            throw new IllegalArgumentException("Decay cannot be negative");
         }
         satisfaction = Math.max(0, satisfaction - amount);
     }
