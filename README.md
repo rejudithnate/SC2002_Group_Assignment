@@ -187,8 +187,8 @@ Each member's AI interaction history is available on their respective GitHub bra
 
 | Group Member | AI History |
 |---|---|
-| Huang Jing | HuangJing_AI_Declaration/ai-history/stage-3 |
-| Judith Yang Huiting | Judith_AIDeclaration |
-| Li Yuexin | AIDeclaration |
-| Angelina Kee Jing Yu | Wenqi_GenAI_Declaration |
-| Fu Wenqi | Wenqi_GenAI_Declaration |
+| Huang Jing | [HuangJing_AI_Declaration/ai-history/stage-3](https://github.com/rejudithnate/SC2002_Group_Assignment/tree/docs/huangjing-ai-declaration/HuangJing_AI_Declaration/ai-history/stage-3) |
+| Judith Yang Huiting | [Judith_AIDeclaration](https://github.com/rejudithnate/SC2002_Group_Assignment/tree/docs/Judith_AIDeclaration/Judith_AIDeclaration) |
+| Li Yuexin | [https://github.com/rejudithnate/SC2002_Group_Assignment/tree/yuexin_ai_declaration/AIDeclaration](https://github.com/rejudithnate/SC2002_Group_Assignment/tree/yuexin_ai_declaration/AIDeclaration) |
+| Angelina Kee Jing Yu | [https://github.com/rejudithnate/SC2002_Group_Assignment/tree/Angelina_AIDeclaration/Angelina_AIDeclaration](https://github.com/rejudithnate/SC2002_Group_Assignment/tree/Angelina_AIDeclaration/Angelina_AIDeclaration) |
+| Fu Wenqi | [Wenqi_GenAI_Declaration](https://github.com/rejudithnate/SC2002_Group_Assignment/tree/Wenqi_AI_Declaration/Wenqi_GenAI_Declaration) |
