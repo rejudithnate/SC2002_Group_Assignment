@@ -69,22 +69,61 @@ The final class diagram, sequence diagram, design trade-offs and relevant SOLID 
 
 ## 5. Development history and GitHub comparisons
 
-### Stage 1 → Stage 2
+### Team member responsibilities
+
+| Member (GitHub) | Module area | Types and packages | Core responsibilities |
+|---|---|---|---|
+| Huang Jing (`hjingwork-ux`) | Staff actions, tables and menu items | `Waiter`, `Chef`, `Table`, `RegularCustomer`, `SingleDish`, `ComboMeal`, `MenuItem` (`entity`) | Implemented waiter and chef actions and table handling, added `RegularCustomer`, fixed customer arrivals, introduced single dishes and combos through the abstract `MenuItem` class, and contributed final fixes, tests and README updates. |
+| Li Yuexin (`monthlysalary`) | Restaurant operations and Happy Hour | `Restaurant` (`entity`), `TurnController` (`control`), `GameUI` (`boundary`) | Implemented `Restaurant`, helped integrate Stage 2 and connected Happy Hour to restaurant operations, turn handling and the console UI. |
+| Judith Yang Huiting (`rejudithnate`) | Repository setup, gameplay integration and staff turns | `Customer`, `Order`, `MenuItem`, `OrderStatus`, `TurnController`, `Host`, `Staff` (`entity`) | Set up the repository with `Customer`, `Order`, `MenuItem`, `OrderStatus`, integrated and debugged gameplay, and implemented independent Host seating and shared staff turn management. |
+| Fu Wenqi (`dbluencuei`) | Console UI, game control and customer behaviour | `GameUI` (`boundary`), `GameController`, `TurnController` (`control`), `Customer`, `Order`, `Restaurant` (`entity`) | Implemented the console UI and game controller, developed polymorphic customer behaviour, updated order, restaurant and turn logic in Stage 2, and contributed to final integration. |
+| Angeline Kee Jing Yu (`Bleuflamingoes`) | Turn control and customer types | `TurnController` (`control`), `VIPCustomer`, `CriticCustomer`, `RegularCustomer`, `ComboMeal` (`entity`) | Implemented the Stage 1 turn controller, contributed the VIP, Critic and Regular customer classes, and reviewed and merged the `ComboMeal` feature. |
+
+### Changes from Stage 1 to Stage 2
 
 [Compare `stage-1` and `stage-2`](https://github.com/rejudithnate/SC2002_Group_Assignment/compare/stage-1...stage-2)
 
-- **Added:** `RegularCustomer`, `VIPCustomer`, `CriticCustomer` to provide separate customer behaviours.
-- **Changed:** `Customer` for shared and overridable behaviour; `Restaurant` and `TurnController` for varied arrivals and gameplay; `Order` for customer billing information; `GameUI` for displaying customer information; `README.md` for documentation.
+| New files | Reason |
+|---|---|
+| `RegularCustomer.java` | Keep Stage 1's standard food selection, full-price billing and eight-point satisfaction loss per waiting turn in a regular customer type. |
+| `VIPCustomer.java` | Give VIPs a five-point satisfaction loss per waiting turn and a 10% discount. |
+| `CriticCustomer.java` | Give critics a twelve-point satisfaction loss per waiting turn and make them choose Pasta. |
 
-### Stage 2 → Stage 3
+| Existing files changed | Reason |
+|---|---|
+| `Customer.java` | Make `Customer` an abstract base class that shares the customer lifecycle and lets each type define its waiting penalty, food choice and billing behaviour. |
+| `TurnController.java` | Schedule the VIP on turn 4 and the Critic on turn 7, with regular customers filling the other arrival slots. |
+| `Restaurant.java` | Look up customers by ID while preserving arrival order. Ask each customer to choose a dish and calculate their bill when they order. |
+| `Order.java` | Store the final price in cents when the order is placed so the Cashier can charge that amount at payment. |
+| `GameUI.java` | Show customer types and display `N/A` for average satisfaction until a customer pays. |
+| `README.md` | Identify the repository version as Stage 2 and document the JDK requirement and offline operation. |
 
-[Compare `stage-2` and `stage-3`](https://github.com/rejudithnate/SC2002_Group_Assignment/compare/stage-2...stage-3) *(link works after the final `stage-3` tag is pushed)*
+### Changes from Stage 2 to Stage 3
 
-- **Added:** `Host` (independent seating), `Staff` (common task tracking), `SingleDish` and `ComboMeal` (menu extension), `HappyHourPolicy` (two-turn policy), `Money` (cent-based calculations).
-- **Changed:** `Restaurant` and `TurnController` to coordinate the Host, pricing and turn-start recovery; `Menu`, `MenuItem`, `Order` and customer subclasses for dish selection and locked prices; `Waiter`, `Chef`, `Cashier` and `Table` to integrate and enforce staff/order rules; `GameController`, `Main` and `GameUI` for game setup, result checks and clearer console output; `Customer` for service and recovery behaviour.
-- **Deleted source files:** none.
+[Compare `stage-2` and `stage-3`](https://github.com/rejudithnate/SC2002_Group_Assignment/compare/stage-2...stage-3)
 
-These summaries describe the significant Java changes; see the GitHub compare links for the complete file-by-file history.
+| New files | Reason |
+|---|---|
+| `Host.java`, `Staff.java` | Give the Host a separate seating action and share turn availability, reset and wait logic across the Host, Waiter and Chef. |
+| `SingleDish.java`, `ComboMeal.java` | Represent individual dishes and the Salad + Pasta Combo under the same menu item type. The combo adds the preparation units and charges 90% of the combined price. |
+| `HappyHourPolicy.java`, `Money.java` | Track the once-per-game, two-turn promotion and apply its discount to new bills with rounding to the nearest cent. |
+| `tests/RestaurantRushTests.java` | Check complete Stage 3 victory and defeat runs, customer behaviours, combo preparation, Happy Hour, separate staff actions and payment timing. |
+| `tests/inputs/stage1-victory.txt`, `tests/inputs/stage1-defeat.txt`, `tests/inputs/stage2-victory.txt`, `tests/inputs/stage2-defeat.txt` | Save the console choices for replaying victories and defeats against the earlier stage tags. |
+| `tests/inputs/victory.txt`, `tests/inputs/victory_happy_hour.txt`, `tests/inputs/defeat.txt` | Save the Stage 3 victories with and without Happy Hour and the Stage 3 defeat. |
+| `docs/uml/README.md`, `Stage1_UML.drawio.png`, `Stage2_UML.drawio.png`, `Stage 3 Sequence Diagram-Page-7.drawio.png` | Document the UML folder and include the Stage 1 and 2 class diagrams and the Stage 3 sequence diagram. |
+| `out/` Java class files | Include the compiled game and test runner in the tagged snapshot. |
+
+| Existing files changed | Reason |
+|---|---|
+| `TurnController.java` | Read the Happy Hour decision, apply recovery at the start of active turns, run the Host before the Waiter and advance the promotion timer at the end of the turn. |
+| `Restaurant.java` | Handle Host and Waiter seating separately, restore satisfaction to eligible waiting customers and apply Happy Hour after the customer-specific discount when pricing a new order. |
+| `Waiter.java`, `Chef.java` | Use the shared `Staff` logic to check and record each role's action for the turn. |
+| `Customer.java` | Restore satisfaction up to 100 and restrict customer state updates such as table assignment and service timing to the entity package. |
+| `MenuItem.java`, `Menu.java`, `CriticCustomer.java` | Define the shared menu item methods, register the combo for every fourth customer and give the Critic direct access to Pasta. |
+| `Order.java` | Total prices and preparation units through the `MenuItem` methods used by both single dishes and combos. |
+| `GameUI.java` | Add the Happy Hour prompt and status display, show each order's locked bill and preparation progress, and display turn summaries and victory targets. |
+| `Main.java`, `GameController.java`, `Cashier.java`, `Table.java`, `RegularCustomer.java`, `VIPCustomer.java` | Clean up formatting and comments around startup, result checks, payments, table handling and customer rules. |
+| `README.md` | Expand the build instructions, gameplay rules, design overview and steps for running tests and replaying saved choices. |
 
 ## 6. Testing and reproducible runs
 
