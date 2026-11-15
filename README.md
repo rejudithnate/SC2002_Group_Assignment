@@ -173,15 +173,15 @@ Fill in the actual timestamps after recording:
 
 | Required segment | Timestamp |
 |------------------|-----------|
-| Launching the submitted project |  |
-| Manager choices and staff constraints |  |
-| READY → SERVED → eating → payment |  |
-| VIP or Critic behaviour |  |
-| Stage 3 Host, ComboMeal or Happy Hour |  |
-| Victory and defeat demonstrations |  |
-| Stage comparisons, tags and UML diagrams |  |
+| Launching the submitted project | 04:45–05:00, 05:30–05:45 |
+| Manager choices and staff constraints | 01:45–02:00, 05:45–06:00 |
+| READY → SERVED → eating → payment | 05:00–05:15, 13:45–14:00 |
+| VIP or Critic behaviour | 06:15–06:30, 10:15–10:30 |
+| Stage 3 Host, ComboMeal or Happy Hour | 00:15–00:30, 06:00–06:15, 06:30–06:45 |
+| Victory and defeat demonstrations | 08:15–08:30 (test results), 09:00–09:15 (victory), 12:00–12:15 (test results) |
+| Stage comparisons, tags and UML diagrams | 06:15–06:30, 08:30–08:45, 10:15–10:30, 11:00–11:15, 13:00–13:15 |
 
-## 8. Before submission
+## 9. Before submission
 
 - [ ] Main game compiles and runs offline, all 18 turns.
 - [ ] Fixed-input victory/defeat runs and automated tests pass.
