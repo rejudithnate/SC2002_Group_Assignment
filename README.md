@@ -181,11 +181,14 @@ Fill in the actual timestamps after recording:
 | Victory and defeat demonstrations | 08:15–08:30 (test results), 09:00–09:15 (victory), 12:00–12:15 (test results) |
 | Stage comparisons, tags and UML diagrams | 06:15–06:30, 08:30–08:45, 10:15–10:30, 11:00–11:15, 13:00–13:15 |
 
-## 9. Before submission
+## 8.Individual AI History
 
-- [ ] Main game compiles and runs offline, all 18 turns.
-- [ ] Fixed-input victory/defeat runs and automated tests pass.
-- [ ] Git tags `stage-1`, `stage-2`, `stage-3` identify runnable commits.
-- [ ] Class diagram matches final code; sequence diagram and design discussion are in the PDF report.
-- [ ] Video timestamps and stage comparison links are complete.
-- [ ] Include source code, README, PDF report, video and required original-work / GAI declarations in the submission archive.
+Each member's AI interaction history is available on their respective GitHub branch.
+
+| Group Member | AI History |
+|---|---|
+| Huang Jing | HuangJing_AI_Declaration/ai-history/stage-3 |
+| Judith Yang Huiting | Judith_AIDeclaration |
+| Li Yuexin | AIDeclaration |
+| Angelina Kee Jing Yu | Wenqi_GenAI_Declaration |
+| Fu Wenqi | Wenqi_GenAI_Declaration |
